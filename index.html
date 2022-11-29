@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  
 
 <head>
   <meta charset="UTF-8">
@@ -69,25 +70,32 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="console-log">Console Log</button>
+      <button id="console-error">Console Error</button>
+      <button id="console-count">Console Count</button>
+      <button id="console-warn">Console Warn</button>
+      <button id="console-assert">Console Assert</button>
+      <button id="console-clear">Console Clear</button>
+      <button id="console-dir">Console Dir</button>
+      <button id="console-dirxml">Console dirxml</button>
+      <button id="console-group-start">Console Group Start</button>
+      <button id="console-group-end">Console Group End</button>
+      <button id="console-table">Console Table</button>
+      <button id="start-timer">Start Timer</button>
+      <button id="end-timer">End Timer</button>
+      <button id="console-trace">Console Trace</button>
+      <button id="global-error">Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "f064220e14c843efb5969397bb8de996"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    TrackJS.track('Testing TrackJS!');
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +103,114 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch(err) {
+        console.log(err);
+      } finally {
+        console.log("Error caught or operation executed");
+      }
+      
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let console_log_button = errorBtns[0];
+    console_log_button.addEventListener('click', () => {
+      console.log('This is a Console Log Demo');
+    });
+    let console_error_button = errorBtns[1];
+    console_error_button.addEventListener('click', () => {
+      console.error('This is a Console Error Demo');
+    });
+    let console_count_button = errorBtns[2];
+    console_count_button.addEventListener('click', () => {
+      console.count("Count of button clicked");
+    });
+    let console_warn_button = errorBtns[3];
+    console_warn_button.addEventListener('click', () => {
+      console.warn("This is a Console Warn Demo");
+    });
+    let console_assert_button = errorBtns[4];
+    console_assert_button.addEventListener('click', () => {
+      let number = 4;
+      let error_message = "Number is not 5";
+      console.assert(number === 5, { number, error_message });
+    });
+    let console_clear_button = errorBtns[5];
+    console_clear_button.addEventListener('click', () => {
+      console.clear();
+    });
+    let console_dir_button = errorBtns[6];
+    console_dir_button.addEventListener('click', () => {
+      console.dir(console_dir_button);
+    });
+    let console_dirxml_button = errorBtns[7];
+    console_dirxml_button.addEventListener('click', () => {
+      console.dirxml(console_dirxml_button);
+    });
+    let console_group_start = errorBtns[8];
+    console_group_start.addEventListener('click', () => {
+      console.group();
+    });
+    let console_group_end = errorBtns[9];
+    console_group_end.addEventListener('click', () => {
+      console.groupEnd();
+    });
+    function Course(name, number){
+      this.name = name;
+      this.num = number;
+    }
+    let console_table = errorBtns[10];
+    console_table.addEventListener('click', () => {
+      let array_classes = [new Course("Software Engineering", "110"), new Course("Programming Languages: Principles and Paradigms", "130"), new Course("Advanced Software Engineering", "112")]
+      console.table(array_classes);
+    });
+    let start_timer = errorBtns[11];
+    start_timer.addEventListener('click', () => {
+      console.time("Timer Button: ");
+    });
+    let end_timer = errorBtns[12];
+    end_timer.addEventListener('click', () => {
+      console.timeEnd("Timer Button: ");
+    });
+    let console_trace = errorBtns[13];
+    console_trace.addEventListener('click', () => {
+      console.trace();
+    });
+    let global_error = errorBtns[14];
+    global_error.addEventListener('click', () => {
+      window.onerror = console.log("global error")
+
+    });
+    class StringError extends Error {
+      constructor(message) {
+        super(message); 
+        this.name = "StringError";
+      }
+    }
+    function create_course_object(name, number) {
+      if (typeof(name) != 'string') {
+        throw new StringError("Wrong type: name");
+      }
+      if (typeof(number) != 'string') {
+        throw new StringError("Wrong type: number");
+      }
+      return new Course(name, number);
+    }
+    try {
+      let new_course = create_course_object("Software Engineering", 110);
+      console.log(new_course);
+    } catch(err) {
+      if(err instanceof StringError){
+        console.log("Error: "+err.message);
+      }
+      else{
+        throw err;
+      }
+    }
   </script>
 </body>
 
